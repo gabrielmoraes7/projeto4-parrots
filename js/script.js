@@ -92,10 +92,12 @@ function flipCard(cardSelected){
   if (!auxFlip) {
     auxFlip = true;
     firstCard = cardSelected;
-    console.log("selecionou")
+    console.log("selecionou1")
 
   } else {
     secondCard = cardSelected;
+    console.log("selecionou2");
+
 
     if (firstCard.querySelector('.img-front').src === secondCard.querySelector('.img-front').src) {
       firstCard.removeAttribute('onClick');
@@ -114,10 +116,13 @@ function flipCard(cardSelected){
     } else {
       setTimeout(() => {
         firstCard.classList.remove('flipped');
-        firstCard.classList.add('backClick');
+        firstCard.classList.remove('frontClick');
+        firstCard.classList.remove('backClick');
         
         secondCard.classList.remove('flipped');
-        secondCard.classList.add('backClick');
+        secondCard.classList.remove('frontClick');
+        secondCard.classList.remove('backClick');
+
         firstCard = null;
         secondCard = null;
       }, 1000);
