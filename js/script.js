@@ -4,6 +4,7 @@ let auxFirstCard, auxSecondCard;  //usadas para limpar as duas escolhas atuais  
 let auxArray = [];                //array temporaria para guardar as cartas usadas em jogo
 let clicks = 0;                   //qntd de jogadas
 let pairs = 0;                    //numero de pares de cartas 
+let auxFlip = false;
 
 //array contendo os gifs das caras
 const cards = [   
@@ -52,8 +53,8 @@ function setCards(){
 
   for (let i = 0; i < auxArray.length; i++) {       //alternativa encontrada ao ter falha para visualizar a carta selecionada foi usar uma div colocada em display: none; como sendo um farol identificador para comparar se ambas as cartas são semelhantes
     let numberCards = `                           
-    <li onClick="flipCard(this)" class="card">
-      <div data-test="card">
+    <li onClick="flipCard(this)" class="card" data-test="card">
+      <div>
           <div class="selected-aux">                    
             '${auxArray[i]}'
           </div> 
@@ -61,7 +62,7 @@ function setCards(){
               <img class="parrot"  data-test="face-down-image" src="./assets/back.png">
           </div>
           <div class="back-face face">
-              <img data-test="face-up-image" src='${auxArray[i]}'>
+              <img class="img-front" data-test="face-up-image" src='${auxArray[i]}'>
           </div>
       </div>
     </li>`;
@@ -74,7 +75,7 @@ function setCards(){
 
 //vira as cartas
 function flipCard(cardSelected){
-  let auxFlip = false;            //auxiliar para impedir uma 3º carta
+             //auxiliar para impedir uma 3º carta
 
   clicks++;
 
@@ -91,18 +92,19 @@ function flipCard(cardSelected){
   if (!auxFlip) {
     auxFlip = true;
     firstCard = cardSelected;
+    console.log("selecionou")
 
   } else {
     secondCard = cardSelected;
 
-    if (firstCard.querySelector('.selected').innerHTML === secondCard.querySelector('.selected').innerHTML) {
+    if (firstCard.querySelector('.img-front').src === secondCard.querySelector('.img-front').src) {
       firstCard.removeAttribute('onClick');
       secondCard.removeAttribute('onClick');
       firstCard = null;
       secondCard = null;
       pairs++;
 
-      /*    teste para checar se a quantidade de pares selecionados bate com a quantidade de pares inseridos
+      /*teste para checar se a quantidade de pares selecionados bate com a quantidade de pares inseridos
 
       console.log(pairs);
       console.log(auxArray.length/2);
