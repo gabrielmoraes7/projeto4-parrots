@@ -1,3 +1,7 @@
+*{
+  box-sizing: border-box;
+}
+
 body{
     background-color:#EEF9BF;
     box-sizing: border-box;
@@ -43,12 +47,13 @@ body{
   .back-face {
     transform: rotateY(180deg);
   }
-
-  .card:hover .back-face {
+  /*.card:hover .back-face*/
+  .backClick {
     transform: rotateY(0deg);
   }
 
-  .card:hover .front-face {
+    /*.card:hover .front-face*/
+  .frontClick {
     transform: rotateY(-180deg);
   }
 
@@ -63,6 +68,40 @@ body{
 .parrot{
   width: 100px;
   height: 100px;
-  position: absolute  ;
+  position:absolute;
+}
+
+/*usada para comparar as cartas selecionadas*/
+.selected-aux{
+  display: none;
+}
+
+@media (max-width: 1000px) {
+
+  h1 {
+
+      font-size: 36px;
+  }
+
+  .timer {
+      
+      width: 60px;
+      height: 25px;
+      font-size: 20px;
+  }
+
+  .main {
+
+      width: 100%;
+  }
+
+  .main .cards-container {
+
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 40px;
+      margin-bottom: 40px;
+  }
 }
   

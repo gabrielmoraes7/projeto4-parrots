@@ -1,6 +1,9 @@
-let quantityCards;            //recebe a quantidade de cartas que o usuario deseja para o jogo
-let firstCard,secondCard;     //variaveis que guardaram se o usuario selecionou as duas cartas para confirmar o acerto ou não
-let auxArray = [];            //array temporaria para guardar as cartas usadas em jogo
+let quantityCards;                //recebe a quantidade de cartas que o usuario deseja para o jogo
+let firstCard,secondCard;         //variaveis que guardaram se o usuario selecionou as duas cartas para confirmar o acerto ou não
+let auxFirstCard, auxSecondCard;  //usadas para limpar as duas escolhas atuais  caso venham a ser erradas e voltar elas a sua posição original   
+let auxArray = [];                //array temporaria para guardar as cartas usadas em jogo
+let clicks = 0;                   //qntd de jogadas
+let pairs = 0;                    //numero de pares de cartas 
 
 //array contendo os gifs das caras
 const cards = [   
@@ -26,22 +29,6 @@ while (aux != true) {
   }
 } 
 
-//vira as cartas
-function flipCard(carta){
-  if (carta.classList.contains('.card')) {
-      return;
-  }
-
-  else if (firstCard  !== undefined && secondCard !== undefined) {
-    return;
-  }
-
-  else if (firstCard  === undefined || secondCard === undefined) {
-    carta.classList.add('.card');
-    console.log(carta);
-  }
-}
-
 
 function randCards(){
   return Math.random() - 0.5; 
@@ -63,15 +50,18 @@ function mixCards(){
 function setCards(){
   let aux1 = document.querySelector('.box-card');
 
-  for (let i = 0; i < auxArray.length; i++) {
-    let numberCards = `
-    <li>
-      <div class="card">
+  for (let i = 0; i < auxArray.length; i++) {       //alternativa encontrada ao ter falha para visualizar a carta selecionada foi usar uma div colocada em display: none; como sendo um farol identificador para comparar se ambas as cartas são semelhantes
+    let numberCards = `                           
+    <li onClick="flipCard(this)" class="card">
+      <div data-test="card">
+          <div class="selected-aux">                    
+            '${auxArray[i]}'
+          </div> 
           <div class="front-face face">
-              <img class="parrot" src="./assets/back.png">
+              <img class="parrot"  data-test="face-down-image" src="./assets/back.png">
           </div>
           <div class="back-face face">
-              <img src='${auxArray[i]}'>
+              <img data-test="face-up-image" src='${auxArray[i]}'>
           </div>
       </div>
     </li>`;
@@ -79,6 +69,80 @@ function setCards(){
     aux1.innerHTML +=numberCards;
     console.log(this);
     
+  }
+}
+
+//vira as cartas
+function flipCard(cardSelected){
+  let auxFlip = false;            //auxiliar para impedir uma 3º carta
+
+  clicks++;
+
+  let frontFace = cardSelected.querySelector('.front-face');
+  frontFace.classList.add('frontClick');
+
+  let backFace = cardSelected.querySelector('.back-face');
+  backFace.classList.add('backClick');
+
+  cardSelected.classList.add('flipped');
+  cardSelected.removeAttribute('onClick');
+  //console.log("isso ai!!!");  teste
+
+  if (!auxFlip) {
+    auxFlip = true;
+    firstCard = cardSelected;
+
+  } else {
+    secondCard = cardSelected;
+
+    if (firstCard.querySelector('.selected').innerHTML === secondCard.querySelector('.selected').innerHTML) {
+      firstCard.removeAttribute('onClick');
+      secondCard.removeAttribute('onClick');
+      firstCard = null;
+      secondCard = null;
+      pairs++;
+
+      /*    teste para checar se a quantidade de pares selecionados bate com a quantidade de pares inseridos
+
+      console.log(pairs);
+      console.log(auxArray.length/2);
+      */
+      endGame();
+
+    } else {
+      setTimeout(() => {
+        firstCard.classList.remove('flipped');
+        firstCard.classList.add('backClick');
+        
+        secondCard.classList.remove('flipped');
+        secondCard.classList.add('backClick');
+        firstCard = null;
+        secondCard = null;
+      }, 1000);
+    }
+    auxFlip = false;
+  }
+
+}
+
+//função q verifica a cada par feito se todos os cards estão em "flipped", logo todos selecionados
+function endGame() {
+  const cards = document.querySelectorAll('.card');
+  const allFlipped = [...cards].every(card => card.classList.contains('flipped'));
+  if (allFlipped) {
+    setTimeout(() => {
+      alert(`Você ganhou em ${clicks} jogadas!` );
+      
+      let resp = prompt("Você gostaria de reiniciar a partida? (sim ou não)");
+      while(resp !== "sim" && resp !== "não"){
+        resp = prompt("Apenas digite: sim ou não");
+      }
+
+      if (resp === "sim"){
+        location.reload();
+      }
+    }, 400);
+    clearInterval(IntervalId);
   }
 }
 
